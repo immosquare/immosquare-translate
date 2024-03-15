@@ -10,8 +10,6 @@ module ImmosquareTranslate
 
       def translate(file_path, locale_to,  options = {})
         begin
-          puts("je suis la toto")
-          puts
           ##=============================================================##
           ## options
           ##=============================================================##
@@ -177,12 +175,8 @@ module ImmosquareTranslate
         ## https://openai.com/pricing
         ##============================================================##
         model_name = ImmosquareYaml.configuration.openai_model
-        models     = [
-          {:name => "gpt-3.5-turbo-0125", :window_tokens => 16_385,  :output_tokens => 4096, :input_price_for_1m => 0.50,  :output_price_for_1m => 1.50,  :group_size => 75},
-          {:name => "gpt-4-0125-preview", :window_tokens => 128_000, :output_tokens => 4096, :input_price_for_1m => 10.00, :output_price_for_1m => 30.00, :group_size => 75}
-        ]
-        model = models.find {|m| m[:name] == model_name }
-        model = models.find {|m| m[:name] == "gpt-4-0125-preview" } if model.nil?
+        model      = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
+        model      = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4-0125-preview" } if model.nil?
 
         ##============================================================##
         ## Manage blank values
@@ -300,10 +294,7 @@ module ImmosquareTranslate
             call = HTTParty.post("https://api.openai.com/v1/chat/completions", :body => body.to_json, :headers => headers, :timeout => 500)
 
             puts("responded in #{(Time.now - t0).round(2)} seconds")
-            if call.code != 200
-              puts(call.body)
-              raise(call["error"]["message"])
-            end
+            raise(call["error"]["message"]) if call.code != 200
 
 
             ##============================================================##
