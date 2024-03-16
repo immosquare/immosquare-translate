@@ -43,7 +43,8 @@ namespace :immosquare_translate do
     desc "Translate text from English to French"
     task :translate do
       load_config
-      ImmosquareTranslate::Translator.translate(["Bonjour"], "fr", ["en", "es", "it"])
+      datas = ImmosquareTranslate::Translator.translate(["Bonjour", "Au revoir"], "fr", ["en", "es", "it"])
+      puts datas.inspect
     end
   end
 end

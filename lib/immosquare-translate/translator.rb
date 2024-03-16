@@ -21,13 +21,24 @@ module ImmosquareTranslate
           model         = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4-0125-preview" } if model.nil?
           from_iso      = ISO_639.find_by_code(from).english_name.split(";").first
           to_iso        = to.map {|l| ISO_639.find_by_code(l).english_name.split(";").first }
-          prompt_system = "You are a translation tool from #{from_iso} to #{to_iso.join(",")}\n"
           headers       = {
             "Content-Type"  => "application/json",
             "Authorization" => "Bearer #{ImmosquareTranslate.configuration.openai_api_key}"
           }
-          prompt = "Translate the following text from #{from_iso} to #{to_iso.join(",")}\n"
-          prompt += text.map {|t| "#{t}\n" }.join
+
+          prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages. " \
+                          "It is imperative that you return the translations in a single, pure JSON string format. Use ISO 639-1 language codes for specifying languages. " \
+                          "Ensure that the output does not include markdown or any other formatting characters. Adhere to the JSON structure meticulously."
+
+
+          prompt = "Translate the following sentences from '#{from_iso}' into the languages #{to_iso.join(", ")}, and format the output as a single, pure JSON string. " \
+                   "Follow the structure: {\"datas\":[{\"en\":\"English Translation\",\"es\":\"Spanish Translation\",\"it\":\"Italian Translation\"}]}, using the correct ISO 639-1 language codes for each translation. " \
+                   "Your response should strictly conform to this JSON structure without any additional characters or formatting. Sentences to translate are:"
+
+          text.each_with_index do |sentence, index|
+            prompt += "\n#{index + 1}: #{sentence}"
+          end
+
 
           body = {
             :model       => model[:name],
@@ -37,8 +48,11 @@ module ImmosquareTranslate
             ],
             :temperature => 0.0
           }
+
+
           t0   = Time.now
           call = HTTParty.post("https://api.openai.com/v1/chat/completions", :body => body.to_json, :headers => headers, :timeout => 500)
+
 
           puts("responded in #{(Time.now - t0).round(2)} seconds")
           raise(call["error"]["message"]) if call.code != 200
@@ -58,17 +72,15 @@ module ImmosquareTranslate
           price         = input_price + output_price
           puts("Estimate price => #{input_price.round(3)} + #{output_price.round(3)} = #{price.round(3)} USD")
 
-          puts(choice["message"]["content"])
+
+          p = JSON.parse(choice["message"]["content"])
+          p["datas"]
         rescue StandardError => e
           puts(e.message)
           puts(e.backtrace)
           false
         end
       end
-
-
-
-
 
 
     end
