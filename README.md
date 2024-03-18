@@ -74,6 +74,19 @@ To reset translations in the target file before translating:
 ImmosquareTranslate::YmlTranslator.translate("path/to/your/file.yml", "fr", reset_translations: true)
 ```
 
+
+### Translate Data Arrays
+
+Effortlessly translate arrays of text from one language to multiple target languages:
+
+```ruby
+translated_data = ImmosquareTranslate::Translator.translate(["Bonjour", "Au revoir"], "fr", ["en", "es", "it"])
+```
+
+```ruby
+[{"en"=>"Hello", "es"=>"Hola", "it"=>"Ciao"}, {"en"=>"Goodbye", "es"=>"Adiós", "it"=>"Addio"}]
+```
+
 ---
 
 ## Rake Tasks
