@@ -28,7 +28,8 @@ module ImmosquareTranslate
 
           prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages. " \
                           "It is imperative that you return the translations in a single, pure JSON string format. Use ISO 639-1 language codes for specifying languages. " \
-                          "Ensure that the output does not include markdown or any other formatting characters. Adhere to the JSON structure meticulously."
+                          "if string is html, you should return the translated html." \
+                          "Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously."
 
 
           prompt = "Translate the following sentences from '#{from_iso}' into the languages #{to_iso.join(", ")}, and format the output as a single, pure JSON string. " \
