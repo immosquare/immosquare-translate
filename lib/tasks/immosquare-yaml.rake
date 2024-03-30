@@ -1,7 +1,7 @@
-namespace :immosquare_yaml do
+namespace :immosquare_translate do
   ##============================================================##
   ## Function to translate translation files in rails app
-  ## rake immosquare_yaml:translate SOURCE_LOCALE=fr
+  ## rake immosquare_translate:translate SOURCE_LOCALE=fr
   ##============================================================##
   desc "Translate translation files in rails app"
   task :translate => :environment do
@@ -17,7 +17,7 @@ namespace :immosquare_yaml do
       puts("Translating from #{source_locale} to #{locales.join(", ")} with reset_translations=#{reset_translations}")
       Dir.glob("#{Rails.root}/config/locales/**/*#{source_locale}.yml").each do |file|
         locales.each do |locale|
-          ImmosquareYaml::Translate.translate(file, locale, :reset_translations => reset_translations)
+          ImmosquareTranslate::YmlTranslator.translate(file, locale, :reset_translations => reset_translations)
         end
       end
     rescue StandardError => e
