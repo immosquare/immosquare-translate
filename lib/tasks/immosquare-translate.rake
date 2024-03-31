@@ -4,9 +4,9 @@ namespace :immosquare_translate do
   ## rake immosquare_translate:translate SOURCE_LOCALE=fr
   ##============================================================##
   desc "Translate translation files in rails app"
-  task :translate => :environment do
+  task :translate_rails_locales => :environment do
     begin
-      source_locale      = ENV.fetch("SOURCE_LOCALE", nil) || "fr"
+      source_locale      = ENV.fetch("SOURCE_LOCALE", nil)      || "fr"
       reset_translations = ENV.fetch("RESET_TRANSLATIONS", nil) || false
       reset_translations = reset_translations == "true"
 
@@ -22,16 +22,6 @@ namespace :immosquare_translate do
       end
     rescue StandardError => e
       puts(e.message)
-    end
-  end
-
-  ##============================================================##
-  ## Function to clean translation files in rails app
-  ##============================================================##
-  desc "Clean translation files in rails app"
-  task :clean => :environment do
-    Dir.glob("#{Rails.root}/config/locales/**/*.yml").each do |file|
-      ImmosquareYaml.clean(file)
     end
   end
 end

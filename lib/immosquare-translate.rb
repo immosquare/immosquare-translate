@@ -2,7 +2,7 @@ require_relative "immosquare-translate/configuration"
 require_relative "immosquare-translate/shared_methods"
 require_relative "immosquare-translate/yml_translator"
 require_relative "immosquare-translate/translator"
-
+require_relative "immosquare-translate/railtie" if defined?(Rails)
 
 
 ##===========================================================================##
