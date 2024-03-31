@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.3] - 2024-03-31
+
+- Add railtie.rb file
+
 ## [0.1.2] - 2024-03-30
 
 - Improve Task
