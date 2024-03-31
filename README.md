@@ -96,11 +96,11 @@ Simplify YML file management with provided rake tasks:
 1. **Translation**: Translates all translation files within your Rails application. By default, `SOURCE_LOCALE` is French (fr), and `RESET_TRANSLATIONS` is false.
 
 ```bash
-rake immosquare_translate:translate
+rake immosquare_translate:translate_rails_locales
 ```
 
 ```bash
-rake immosquare_translate:translate SOURCE_LOCALE=en RESET_TRANSLATIONS=true
+rake immosquare_translate:translate_rails_locales SOURCE_LOCALE=en RESET_TRANSLATIONS=true
 ```
 
 ---
