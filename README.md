@@ -77,7 +77,8 @@ ImmosquareTranslate::YmlTranslator.translate("path/to/your/file.yml", "fr", rese
 
 ### Translate Data Arrays
 
-Effortlessly translate arrays of text from one language to multiple target languages:
+Effortlessly translate arrays of text from one language to multiple target languages. This feature also supports text correction by including the source language among the target languages. This allows for the correction of spelling and grammatical errors in the source text:
+
 
 ```ruby
 translated_data = ImmosquareTranslate::Translator.translate(["Bonjour", "Au revoir"], "fr", ["en", "es", "it"])
@@ -85,6 +86,14 @@ translated_data = ImmosquareTranslate::Translator.translate(["Bonjour", "Au revo
 
 ```ruby
 [{"en"=>"Hello", "es"=>"Hola", "it"=>"Ciao"}, {"en"=>"Goodbye", "es"=>"Adiós", "it"=>"Addio"}]
+```
+
+```ruby
+translated_data = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir"], "fr", ["en", "es", "fr", "it"])
+```
+
+```ruby
+[{"fr"=>"Bonjour mes amis", "en"=>"Hello my friends", "es"=>"Hola mis amigos", "it"=>"Ciao miei amici"}, {"fr"=>"Au revoir", "en"=>"Goodbye", "es"=>"Adiós", "it"=>"Arrivederci"}]
 ```
 
 ---
