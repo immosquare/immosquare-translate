@@ -37,13 +37,13 @@ namespace :immosquare_translate do
 
 
     ##=============================================================##
-    ## Transalate text from English to French
+    ## Transalate text from English to French + fix spelling
     ## rake immosquare_translate:sample:translate
     ##=============================================================##
     desc "Translate text from English to French"
     task :translate do
       load_config
-      datas = ImmosquareTranslate::Translator.translate(["Bonjour", "Au revoir"], "fr", ["en", "es", "it"])
+      datas = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir"], "fr", ["en", "es", "fr", "it"])
       puts datas.inspect
     end
   end

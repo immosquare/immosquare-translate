@@ -26,16 +26,21 @@ module ImmosquareTranslate
             "Authorization" => "Bearer #{ImmosquareTranslate.configuration.openai_api_key}"
           }
 
-          prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages. " \
-                          "It is imperative that you return the translations in a single, pure JSON string format. Use ISO 639-1 language codes for specifying languages. " \
-                          "If string is html, you should return the translated html." \
+          prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
+                          "It is imperative that you return the translations in a single, pure JSON string format. Use ISO 639-1 language codes for specifying languages.\n" \
+                          "If string is html, you should return the translated html.\n" \
                           "Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously."
 
 
-          prompt = "Translate the #{text.size} following  #{text.size == 1 ? "sentence" : "sentences"} from #{from_iso} (with ISO 639-1 code : #{from}) into the languages #{to_iso.map {|iso, l| "#{l} (with ISO 639-1 code : #{iso})" }.join(", ")}.\n" \
-                   "Format the output as a single pure JSON string.\n" \
-                   "Follow this array structure: {\"datas\":[{\"locale_iso\":\"Translated Text\"}]}, using the correct ISO 639-1 language codes for each translation. " \
-                   "Your response should strictly conform to this JSON structure without any additional characters or formatting.\nSentences to translate are:"
+
+          prompt = "Translate the #{text.size} #{text.size == 1 ? "sentence" : "sentences"} provided below from the source language (ISO 639-1 code: #{from}) to the target languages specified: #{to_iso.map {|iso, language| "#{language} (ISO 639-1 code: #{iso})" }.join(", ")}. " \
+                   "Before translating, correct any spelling or grammatical errors in each sentence. " \
+                   "If the source language is also a target language, include the corrected version of the sentence for that language as well. " \
+                   "Format the translation output as a JSON string adhering to the following structure: " \
+                   "{\"datas\":[{\"locale_iso\": \"Translated Text\"}]}, where 'locale_iso' is replaced with the appropriate ISO 639-1 code for each translation. " \
+                   "Ensure the output strictly follows this JSON format, without any extraneous characters or formatting. " \
+                   "Sentences to translate:"
+
 
           text.each_with_index do |sentence, index|
             prompt += "\n#{index + 1}: #{sentence}"
@@ -80,10 +85,11 @@ module ImmosquareTranslate
           ## On s'assure de ne renvoyer que les locales demandées
           ## car l'API peut renvoyer des locales non demandées...
           ##============================================================##
-          p = JSON.parse(choice["message"]["content"])
-          p["datas"].map! do |my_hash|
-            my_hash.select! {|iso, _value| to.include?(iso.to_s) }
-          end
+          content = JSON.parse(choice["message"]["content"])
+          datas   = content["datas"]
+          datas.map do |hash|
+            hash.select {|key, _| to.include?(key) }
+          end.reject(&:empty?)
         rescue StandardError => e
           puts(e.message)
           puts(e.backtrace)
