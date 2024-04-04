@@ -26,10 +26,12 @@ module ImmosquareTranslate
             "Authorization" => "Bearer #{ImmosquareTranslate.configuration.openai_api_key}"
           }
 
-          prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
-                          "It is imperative that you return the translations in a single, pure JSON string format. Use ISO 639-1 language codes for specifying languages.\n" \
-                          "If string is html, you should return the translated html.\n" \
-                          "Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously."
+          prompt_system = "As a sophisticated translation AI, your role is to accurately translate sentences from a specified source language to multiple target languages. " \
+                          "All translations must be returned as a single, pure JSON string, adhering strictly to JSON format standards. Use ISO 639-1 codes to specify languages. " \
+                          "Should the input be HTML, return the translated content preserving the original HTML formatting. " \
+                          "In cases where the sentence contains newline characters '\\n', or tab characters '\\t', ensure these are retained in the translation without alteration. " \
+                          "Your output should be free from markdown (e.g., ```json) or any extraneous formatting characters, focusing solely on maintaining the integrity of the JSON structure."
+
 
 
 
