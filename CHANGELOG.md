@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.4] - 2024-04-04
+
+- Improve translate prompt + we ensure that the languages returned are those requested
+
 ## [0.1.3] - 2024-03-31
 
 - Add railtie.rb file
