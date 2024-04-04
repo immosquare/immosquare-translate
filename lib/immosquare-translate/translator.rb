@@ -26,26 +26,27 @@ module ImmosquareTranslate
             "Authorization" => "Bearer #{ImmosquareTranslate.configuration.openai_api_key}"
           }
 
-          prompt_system = "As a sophisticated translation AI, your role is to accurately translate sentences from a specified source language to multiple target languages. " \
-                          "All translations must be returned as a single, pure JSON string, adhering strictly to JSON format standards. Use ISO 639-1 codes to specify languages. " \
-                          "Should the input be HTML, return the translated content preserving the original HTML formatting. " \
-                          "In cases where the sentence contains newline characters '\\n', or tab characters '\\t', ensure these are retained in the translation without alteration. " \
-                          "Your output should be free from markdown (e.g., ```json) or any extraneous formatting characters, focusing solely on maintaining the integrity of the JSON structure."
+          prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
+                          "Rules to respect:\n" \
+                          "- Use ISO 639-1 language codes for specifying languages." \
+                          "- Correct any spelling or grammatical errors in the source text before translating.\n" \
+                          "- If the source language is also a target language, include the corrected version of the sentence for that language as well, if not dont include it.\n" \
+                          "- If string to translate is html, you should return the translated html.\n" \
+                          "- If string to translate contains 3 underscores in row ___, keep them, don't translate the them, don't remove them, don't change them for dashes (they correspond to the newline)\n" \
+                          "- If string to translate contains 3 dashes in row ---, keep them, don't translate the them, don't remove them, don't change them for underscores (they correspond to the tabulation)\n" \
+                          "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
+                          "- Ensure the output strictly follows this JSON format, without any extraneous characters or formatting.\n" \
+                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]}, where 'locale_iso' is replaced with the appropriate ISO 639-1 code for each translation."
 
 
+          prompt = "Translate the #{text.size} following #{text.size == 1 ? "sentence" : "sentences"} from the source language (ISO 639-1 code: #{from}) to the target languages specified: #{to_iso.map {|iso, language| "#{language} (ISO 639-1 code: #{iso})" }.join(", ")}. "
 
 
-          prompt = "Translate the #{text.size} #{text.size == 1 ? "sentence" : "sentences"} provided below from the source language (ISO 639-1 code: #{from}) to the target languages specified: #{to_iso.map {|iso, language| "#{language} (ISO 639-1 code: #{iso})" }.join(", ")}. " \
-                   "Before translating, correct any spelling or grammatical errors in each sentence. " \
-                   "If the source language is also a target language, include the corrected version of the sentence for that language as well. " \
-                   "Format the translation output as a JSON string adhering to the following structure: " \
-                   "{\"datas\":[{\"locale_iso\": \"Translated Text\"}]}, where 'locale_iso' is replaced with the appropriate ISO 639-1 code for each translation. " \
-                   "Ensure the output strictly follows this JSON format, without any extraneous characters or formatting. " \
-                   "Sentences to translate:"
-
-
+          ##============================================================##
+          ## we replace the \n by ___ to avoid the API to remove them
+          ##============================================================##
           text.each_with_index do |sentence, index|
-            prompt += "\n#{index + 1}: #{sentence}"
+            prompt += "\n#{index + 1}: #{sentence.gsub("\n", "___").gsub("\t", "---")}"
           end
 
 
@@ -90,7 +91,9 @@ module ImmosquareTranslate
           content = JSON.parse(choice["message"]["content"])
           datas   = content["datas"]
           datas.map do |hash|
-            hash.select {|key, _| to.include?(key) }
+            hash
+              .select {|key, _| to.include?(key) }
+              .transform_values {|value| value.gsub("___", "\n").gsub("---", "\t") }
           end.reject(&:empty?)
         rescue StandardError => e
           puts(e.message)
