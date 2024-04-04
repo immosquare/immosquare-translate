@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+
+## [0.1.5] - 2024-04-04
+
+- Improve prompt to fix spelling & grammatical errors
+
 ## [0.1.4] - 2024-04-04
 
 - Improve translate prompt + we ensure that the languages returned are those requested
