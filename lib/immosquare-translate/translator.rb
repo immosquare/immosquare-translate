@@ -29,24 +29,26 @@ module ImmosquareTranslate
           prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
                           "Rules to respect:\n" \
                           "- Use ISO 639-1 language codes for specifying languages." \
+                          "- Respond with an array of a flat objects in JSON (minified, without any extraneous characters or formatting)\n" \
+                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]}" \
+                          "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
                           "- Correct any spelling or grammatical errors in the source text before translating.\n" \
                           "- If the source language is also a target language, include the corrected version of the sentence for that language as well, if not dont include it.\n" \
                           "- If string to translate is html, you should return the translated html.\n" \
-                          "- If string to translate contains 3 underscores in row ___, keep them, don't translate the them, don't remove them, don't change them for dashes (they correspond to the newline)\n" \
-                          "- If string to translate contains 3 dashes in row ---, keep them, don't translate the them, don't remove them, don't change them for underscores (they correspond to the tabulation)\n" \
-                          "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
-                          "- Ensure the output strictly follows this JSON format, without any extraneous characters or formatting.\n" \
-                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]}, where 'locale_iso' is replaced with the appropriate ISO 639-1 code for each translation."
+                          "- If string to translate contains underscores in row, keep them, don't remove them\n" \
+
 
 
           prompt = "Translate the #{text.size} following #{text.size == 1 ? "sentence" : "sentences"} from the source language (ISO 639-1 code: #{from}) to the target languages specified: #{to_iso.map {|iso, language| "#{language} (ISO 639-1 code: #{iso})" }.join(", ")}. "
 
 
           ##============================================================##
-          ## we replace the \n by ___ to avoid the API to remove them
+          ## we replace the \n \t by ___ to avoid JSON parsing errors
+          ## We use the same symbol to replace the \n and \t because
+          ## if we use different symbols sometimes the API inverse them.
           ##============================================================##
           text.each_with_index do |sentence, index|
-            prompt += "\n#{index + 1}: #{sentence.gsub("\n", "___").gsub("\t", "---")}"
+            prompt += "\n#{index + 1}: #{sentence.gsub("\n", "___").gsub("\t", "____")}"
           end
 
 
@@ -93,7 +95,7 @@ module ImmosquareTranslate
           datas.map do |hash|
             hash
               .select {|key, _| to.include?(key) }
-              .transform_values {|value| value.gsub("___", "\n").gsub("---", "\t") }
+              .transform_values {|value| value.gsub("____", "\t").gsub("___", "\n") }
           end.reject(&:empty?)
         rescue StandardError => e
           puts(e.message)
