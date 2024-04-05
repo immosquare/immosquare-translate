@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.8] - 2024-04-04
+
+- Improve prompt to preserve JSON format
+
 ## [0.1.7] - 2024-04-04
 
 - Improve prompt to preserve  \n & \t
