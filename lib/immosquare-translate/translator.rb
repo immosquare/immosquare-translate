@@ -30,7 +30,7 @@ module ImmosquareTranslate
                           "Rules to respect:\n" \
                           "- Use ISO 639-1 language codes for specifying languages." \
                           "- Respond with an array of a flat objects in JSON (minified, without any extraneous characters or formatting)\n" \
-                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]}" \
+                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]} where locale_iso is the ISO 639-1 language code for specifying languages." \
                           "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
                           "- Correct any spelling or grammatical errors in the source text before translating.\n" \
                           "- If the source language is also a target language, include the corrected version of the sentence for that language as well, if not dont include it.\n" \
