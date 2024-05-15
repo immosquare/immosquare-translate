@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    immosquare-translate (0.1.10)
+    immosquare-translate (0.1.11)
       httparty (~> 0)
       immosquare-yaml (~> 0, >= 0.1.26)
       iso-639 (~> 0)

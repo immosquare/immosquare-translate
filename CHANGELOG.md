@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.11] - 2024-05-15
+
+- Fix OPEN_AI_MODELS syntax
+
 ## [0.1.10] - 2024-05-15
 
 - Add new openModel model : gpt-4o
