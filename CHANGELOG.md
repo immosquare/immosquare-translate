@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.10] - 2024-05-15
+
+- Add new openModel model : gpt-4o
+
 ## [0.1.9] - 2024-04-12
 
 - Improve prompt to preserve locale with iso ISO 639-1
@@ -15,7 +19,6 @@
 ## [0.1.6] - 2024-04-04
 
 - Improve prompt to preserve  \n & \t
-
 
 ## [0.1.5] - 2024-04-04
 

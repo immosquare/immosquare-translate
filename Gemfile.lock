@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    immosquare-translate (0.1.9)
+    immosquare-translate (0.1.10)
       httparty (~> 0)
       immosquare-yaml (~> 0, >= 0.1.26)
       iso-639 (~> 0)
@@ -141,4 +141,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   2.5.7
+   2.5.9
