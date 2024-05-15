@@ -48,11 +48,12 @@ Set up your OpenAI API key and specify the OpenAI model in a Rails initializer.
 # Available models:
 # https://platform.openai.com/docs/models/
 # gpt-3.5-turbo-0125
-# gpt-4-0125-preview
+# gpt-4-turbo
+# gpt-4o
 # =======================================
 ImmosquareTranslate.config do |config|
   config.openai_api_key = ENV.fetch("OPENAI_API_KEY", nil)
-  config.openai_model   = "gpt-4-0125-preview"
+  config.openai_model   = "gpt-4o"
 end
 ```
 

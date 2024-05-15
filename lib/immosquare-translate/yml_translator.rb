@@ -176,7 +176,7 @@ module ImmosquareTranslate
         ##============================================================##
         model_name = ImmosquareYaml.configuration.openai_model
         model      = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
-        model      = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4-0125-preview" } if model.nil?
+        model      = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4o" } if model.nil?
 
         ##============================================================##
         ## Manage blank values
