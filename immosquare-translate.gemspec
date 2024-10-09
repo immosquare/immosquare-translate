@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.name          = "immosquare-translate"
   spec.version       = ImmosquareTranslate::VERSION.dup
-  spec.authors       = ["IMMO SQUARE"]
+  spec.authors       = ["immosquare"]
   spec.email         = ["jules@immosquare.com"]
 
   spec.summary       = "AI-powered translations for Ruby applications, supporting a wide range of formats."
