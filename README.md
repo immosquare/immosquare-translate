@@ -117,7 +117,7 @@ rake immosquare_translate:translate_rails_locales SOURCE_LOCALE=en RESET_TRANSLA
 
 ## Contributing
 
-Contributions are welcome! Open an issue or submit a pull request on our [GitHub repository](https://github.com/IMMOSQUARE/immosquare-translate).
+Contributions are welcome! Open an issue or submit a pull request on our [GitHub repository](https://github.com/immosquare/immosquare-translate).
 
 ## License
 
