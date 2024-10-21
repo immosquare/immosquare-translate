@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.12] - 2024-10-21
+
+- Fix Configuration file
+
 ## [0.1.11] - 2024-05-15
 
 - Fix OPEN_AI_MODELS syntax
