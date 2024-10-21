@@ -16,7 +16,7 @@ module ImmosquareTranslate
           raise("Error: locale from is not a locale")                if !from.is_a?(String) || from.size != 2
           raise("Error: locales is not an array of locales")         if !to.is_a?(Array) || to.empty? || to.any? {|l| !l.is_a?(String) || l.size != 2 }
 
-          model_name    = ImmosquareYaml.configuration.openai_model
+          model_name    = ImmosquareTranslate.configuration.openai_model
           model         = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
           model         = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4o" } if model.nil?
           from_iso      = ISO_639.find_by_code(from).english_name.split(";").first

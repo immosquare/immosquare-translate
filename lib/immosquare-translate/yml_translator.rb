@@ -174,7 +174,7 @@ module ImmosquareTranslate
         ## https://platform.openai.com/docs/models/
         ## https://openai.com/pricing
         ##============================================================##
-        model_name = ImmosquareYaml.configuration.openai_model
+        model_name = ImmosquareTranslate.configuration.openai_model
         model      = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
         model      = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4o" } if model.nil?
 
