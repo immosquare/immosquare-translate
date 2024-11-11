@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.13] - 2024-11-11
+
+- Improve translations with countries specifications
+
 ## [0.1.12] - 2024-10-21
 
 - Fix Configuration file
