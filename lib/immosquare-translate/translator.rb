@@ -43,19 +43,21 @@ module ImmosquareTranslate
           }
 
           prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
-                          "We pass you a target languages as array of array with this format [iso_code to  use (2 or 4 letters), language target name , country name (country vocabulary to  use, this paramaeter is optional, can be null)]\n" \
+                          "We pass you a target languages as array of array with this format [iso_code to  use (2 or 4 letters), language target name , country name (country vocabulary to  use, this parameter is optional, can be null)]\n" \
                           "Rules to respect:\n" \
-                          "- Use inputed iso codes for specifying languages." \
-                          "- Respond with an array of a flat objects in JSON (minified, without any extraneous characters or formatting)\n" \
-                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]} where locale_iso is language code for specifying languages." \
+                          "- Use inputed iso codes for specifying languages.\n" \
+                          "- Respond with an array of a flat objects in JSON (minified, without any extraneous characters or formatting).\n" \
+                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]} where locale_iso is language code for specifying languages.\n" \
                           "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
                           "- Correct any spelling or grammatical errors in the source text before translating.\n" \
-                          "- If the source language is also a target language, include the corrected version of the sentence for that language as well, if not dont include it.\n" \
+                          "- If the source language is also a target language, include the corrected version of the sentence for that language as well, if not don't include it.\n" \
                           "- If string to translate is html, you should return the translated html.\n" \
-                          "- If string to translate contains underscores in row, keep them, don't remove them\n" \
+                          "- If string to translate contains underscores in a row, keep them, don't remove them.\n" \
+                          "- Ensure that translations for each input string are grouped together in a single JSON object. Each object must include all requested translations for that string, using the iso_code as keys.\n" \
+                          "- For multiple input strings, return an array of objects, where each object corresponds to an input string and contains all its translations.\n" \
+                          "- Example output for two input strings 'Hello' and 'Goodbye' with target languages ['en', 'es', 'fr']: [{\"en\":\"Hello\",\"es\":\"Hola\",\"fr\":\"Bonjour\"},{\"en\":\"Goodbye\",\"es\":\"Adiós\",\"fr\":\"Au revoir\"}].\n"
 
-          prompt = "Translate the #{texts.size} following #{texts.size == 1 ? "text" : "texts"} from the source language : #{from_language_name} to the target languages specified #{to_iso}"
-
+          prompt = "Translate the #{texts.size} following #{texts.size == 1 ? "text" : "texts"} from the source language: #{from_language_name} to the target languages specified: #{to_iso}."
 
           ##============================================================##
           ## we replace the \n \t by ___ to avoid JSON parsing errors
