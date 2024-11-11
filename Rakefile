@@ -1,6 +1,7 @@
 require "yaml"
 require "immosquare-translate"
 
+
 namespace :immosquare_translate do
   desc "Translate tasks"
 
@@ -40,10 +41,10 @@ namespace :immosquare_translate do
     ## Transalate text from English to French + fix spelling
     ## rake immosquare_translate:sample:translate
     ##=============================================================##
-    desc "Translate text from English to French"
+    desc "Translate texts"
     task :translate do
       load_config
-      datas = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir"], "fr", ["en", "es", "fr", "it"])
+      datas = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir"], "fr", ["en", "es", "fr", "it", "fr-ca"])
       puts datas.inspect
     end
   end
