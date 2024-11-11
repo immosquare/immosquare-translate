@@ -44,7 +44,7 @@ namespace :immosquare_translate do
     desc "Translate texts"
     task :translate do
       load_config
-      datas = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir"], "fr", ["en", "es", "fr", "it", "fr-ca"])
+      datas = ImmosquareTranslate::Translator.translate(["Bonjour mes ami", "O revoir", "je vais au supermarché", "je vais acheter des chaussettes"], "fr", ["en", "es", "fr", "it", "fr-ca"])
       puts datas.inspect
     end
   end
