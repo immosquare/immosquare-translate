@@ -117,9 +117,7 @@ module ImmosquareTranslate
               .select {|key, _| to.map(&:downcase).include?(key.downcase) }
               .transform_values {|value| value.gsub("____", "\t").gsub("___", "\n") }
               .transform_keys do |key|
-                key.to_s.split("-").map.with_index do |part, index|
-                  index == 0 ? part.downcase : part.upcase
-                end.join("-").to_sym
+                key.to_s.split("-").map.with_index {|part, index| index == 0 ? part.downcase : part.upcase }.join("-").to_sym
               end
           end.reject(&:empty?)
         rescue StandardError => e
