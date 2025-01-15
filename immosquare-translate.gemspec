@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.files         = Dir["lib/**/*"]
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = Gem::Requirement.new(">= 3.1.6")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.2.6")
 
   spec.add_dependency("httparty",             "> 0", "<= 100")
   spec.add_dependency("immosquare-yaml",      "> 0", "<= 100")
