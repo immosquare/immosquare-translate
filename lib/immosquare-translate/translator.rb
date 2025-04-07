@@ -84,7 +84,8 @@ module ImmosquareTranslate
 
 
           t0   = Time.now
-          call = HTTParty.post("https://api.openai.com/v1/chat/completions", :body => body.to_json, :headers => headers, :timeout => 500)
+          url  = "https://api.openai.com/v1/chat/completions"
+          call = HTTParty.post(url, :body => body.to_json, :headers => headers, :timeout => 500)
 
 
           puts("responded in #{(Time.now - t0).round(2)} seconds")

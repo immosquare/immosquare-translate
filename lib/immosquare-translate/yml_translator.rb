@@ -10,18 +10,20 @@ module ImmosquareTranslate
 
       def translate(file_path, locale_to,  options = {})
         begin
-          ##=============================================================##
+          ##============================================================##
           ## options
-          ##=============================================================##
+          ## ---------
+          ##============================================================##
           options = {
             :reset_translations => false
           }.merge(options)
           options[:reset_translations] = false  if ![true, false].include?(options[:reset_translations])
 
 
-          ##=============================================================##
+          ##============================================================##
           ## Load config keys from config_dev.yml
-          ##=============================================================##
+          ## ---------
+          ##============================================================##
           raise("Error: openai_api_key not found in config_dev.yml") if ImmosquareTranslate.configuration.openai_api_key.nil?
           raise("Error: File #{file_path} not found")                if !File.exist?(file_path)
           raise("Error: locale is not a locale")                     if !locale_to.is_a?(String) || locale_to.size != 2
@@ -124,7 +126,8 @@ module ImmosquareTranslate
       ## format = "string" and keys_only = true  => ["fr.demo1", "fr.demo2.demo2-1"]
       ## format = "array"  and keys_only = false => [[["fr", "demo1"], "demo1"], [["fr", "demo2", "demo2-1"], "demo2-1"]]
       ## format = "array"  and keys_only = true  => [["fr", "demo1"], ["fr", "demo2", "demo2-1"]]
-      ## ============================================================
+      ## ---------
+      ##============================================================##
       def translatable_array(hash, key = nil, result = [], **options)
         options = {
           :format    => "string",
@@ -162,12 +165,8 @@ module ImmosquareTranslate
 
       ##============================================================##
       ## Translate with OpenAI
-      ##
-      ## [
-      ##  ["en.mlsconnect.contact_us", "Nous contacter", "Contact us"],
-      ##  ["en.mlsconnect.description", "Description", nil],
-      ##  ...
-      ## ]
+      ## [["en.mlsconnect.contact_us", "Nous contacter", "Contact us"],
+      ## ["en.mlsconnect.description", "Description", nil]]
       ##============================================================##
       def translate_with_open_ai(array, from, to)
         ##============================================================##
@@ -192,7 +191,7 @@ module ImmosquareTranslate
         ## we want to send as little data as possible to openAI because
         ## we pay for the volume of data sent. So we're going to send. We put
         ## a number rather than a string for the translations to be made.
-        ## --------
+        ## ---------
         ## Remove the translations that have already been made
         ##============================================================##
         data_open_ai = array.clone
@@ -247,7 +246,7 @@ module ImmosquareTranslate
         ## https://platform.openai.com/tokenizer
         ## English: 75 words => 100 tokens
         ## French : 55 words => 100 tokens
-        ## -----------------
+        ## ---------
         ## For each array value we add 5 tokens for the array format.
         ## [1, "my_word"],
         ## [  => first token
@@ -255,8 +254,8 @@ module ImmosquareTranslate
         ## ,  => third token
         ## "  => fourth token
         ## ]" => fifth token
-        ## -----------------
-        # data_open_ai.inspect.size => to get the total number of characters in the array
+        ## ---------
+        ## data_open_ai.inspect.size => to get the total number of characters in the array
         ## with the array structure [""],
         ##============================================================##
         estimation_for_100_tokens = from == "fr" ? 55 : 75
@@ -269,7 +268,7 @@ module ImmosquareTranslate
         ##============================================================##
         ## Now each slice of the array should no be more than window_tokens
         ## of the model.... We can now translate each slice.
-        ## ---------------------------------
+        ## ---------
         ## Normally we could send the whole slice at once and tell the api to continue if its response is not tarnished...
         ## But it should manage if a word is cut etc...
         ## For the moment we cut it into small group for which we are sure not to exceed the limit
@@ -291,7 +290,8 @@ module ImmosquareTranslate
               :temperature => 0.0
             }
             t0   = Time.now
-            call = HTTParty.post("https://api.openai.com/v1/chat/completions", :body => body.to_json, :headers => headers, :timeout => 500)
+            url  = "https://api.openai.com/v1/chat/completions"
+            call = HTTParty.post(url, :body => body.to_json, :headers => headers, :timeout => 500)
 
             puts("responded in #{(Time.now - t0).round(2)} seconds")
             raise(call["error"]["message"]) if call.code != 200
