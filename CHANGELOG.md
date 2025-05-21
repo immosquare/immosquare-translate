@@ -1,3 +1,6 @@
+## [0.1.16] - 2025-05-21
+- improve rails tasks
+
 ## [0.1.15] - 2025-05-21
 - improve translations methods
 
