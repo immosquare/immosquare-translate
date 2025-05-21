@@ -6,7 +6,7 @@ namespace :immosquare_translate do
   desc "Translate translation files in rails app"
   task :translate_rails_locales => :environment do
     begin
-      source_locale      = ENV.fetch("SOURCE_LOCALE", nil)      || "fr"
+      source_locale      = ENV.fetch("SOURCE_LOCALE", nil)      || I18n.default_locale.to_s
       reset_translations = ENV.fetch("RESET_TRANSLATIONS", nil) || false
       reset_translations = reset_translations == "true"
 
@@ -14,12 +14,19 @@ namespace :immosquare_translate do
       raise("Please provide a valid boolean for reset_translations") if ![true, false].include?(reset_translations)
 
       locales = I18n.available_locales.map(&:to_s).reject {|l| l == source_locale }
-      puts("Translating from #{source_locale} to #{locales.join(", ")} with reset_translations=#{reset_translations}")
+      return puts("Any translation asked") if locales.empty?
+
+      puts("Translations asked :")
+      locales.each do |locale|
+        puts("#{source_locale} => #{locale}")
+      end
+
       Dir.glob("#{Rails.root}/config/locales/**/*#{source_locale}.yml").each do |file|
         locales.each do |locale|
           ImmosquareTranslate::YmlTranslator.translate(file, locale, :reset_translations => reset_translations)
         end
       end
+      puts("Translations done")
     rescue StandardError => e
       puts(e.message)
     end

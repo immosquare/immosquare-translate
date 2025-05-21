@@ -212,7 +212,6 @@ module ImmosquareTranslate
         ##============================================================##
         ## Call OpenAI API
         ##============================================================##
-        index         = 0
         group_size    = model[:group_size]
         from_iso      = ISO_639.find_by_code(from).english_name.split(";").first
         to_iso        = ISO_639.find_by_code(to).english_name.split(";").first
@@ -240,30 +239,6 @@ module ImmosquareTranslate
 
 
         ##============================================================##
-        ## Estimate the number of window_tokens
-        ## https://platform.openai.com/tokenizer
-        ## English: 75 words => 100 tokens
-        ## French : 55 words => 100 tokens
-        ## ---------
-        ## For each array value we add 5 tokens for the array format.
-        ## [1, "my_word"],
-        ## [  => first token
-        ## 2  => second token
-        ## ,  => third token
-        ## "  => fourth token
-        ## ]" => fifth token
-        ## ---------
-        ## data_open_ai.inspect.size => to get the total number of characters in the array
-        ## with the array structure [""],
-        ##============================================================##
-        estimation_for_100_tokens = from == "fr" ? 55 : 75
-        prompt_tokens_estimation  = (((prompt_system.split.size + prompt_init.split.size + data_open_ai.map {|_index, from| from.split.size }.sum) / estimation_for_100_tokens * 100.0) + (data_open_ai.size * 5)).round
-        split_array               = (prompt_tokens_estimation / model[:window_tokens].to_f).ceil
-        slice_size                = (data_open_ai.size / split_array.to_f).round
-        data_open_ai_sliced       = data_open_ai.each_slice(slice_size).to_a
-
-
-        ##============================================================##
         ## Now each slice of the array should no be more than window_tokens
         ## of the model.... We can now translate each slice.
         ## ---------
@@ -271,13 +246,18 @@ module ImmosquareTranslate
         ## But it should manage if a word is cut etc...
         ## For the moment we cut it into small group for which we are sure not to exceed the limit
         ##============================================================##
-        puts("fields to translate from #{from_iso} (#{from}) to #{to_iso} (#{to}) : #{data_open_ai.size}#{" by group of #{group_size}" if data_open_ai.size > group_size}")
-        while index < data_open_ai.size
-          data_group = data_open_ai[index, group_size]
+        repeat = (data_open_ai.size / group_size.to_f).ceil
+        puts("fields to translate from #{from_iso} (#{from}) to #{to_iso} (#{to}) : #{data_open_ai.size}#{" by group of #{group_size}" if repeat > 1}")
 
+        repeat.times do |index|
+          index_start = index * group_size
+          index_end   = ((index + 1) * group_size) - 1
+          data_group  = data_open_ai[index_start..index_end]
+
+          next if index > 3
 
           begin
-            puts("call OPENAI Api (with model #{model[:name]}) #{" for #{data_group.size} fields (#{index}-#{index + data_group.size})" if data_open_ai.size > group_size}")
+            puts("call openai api (with model #{model[:nickname]}) #{"for #{data_group.size} fields (#{index_start}-#{index_end})" if repeat > 1}")
             prompt = "#{prompt_init}:\n\n#{data_group.inspect}\n\n"
             body   = {
               :model       => model[:name],
@@ -293,7 +273,6 @@ module ImmosquareTranslate
 
             puts("responded in #{(Time.now - t0).round(2)} seconds")
             raise(call["error"]["message"]) if call.code != 200
-
 
             ##============================================================##
             ## We check that the result is complete
@@ -324,11 +303,10 @@ module ImmosquareTranslate
               ai_resuslts << [index, translation == cant_be_translated ? nil : translation]
             end
           rescue StandardError => e
-            puts("error OPEN AI API => #{e.message}")
+            puts("error open ai api => #{e.message}")
             puts(e.message)
             puts(e.backtrace)
           end
-          index += group_size
         end
 
 
