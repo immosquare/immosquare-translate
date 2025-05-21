@@ -21,8 +21,14 @@ module ImmosquareTranslate
           raise("Error: locales is not an array of locales")         if !to.is_a?(Array) || to.empty? || to.any? {|l| !l.is_a?(String) }
 
           model_name          = ImmosquareTranslate.configuration.openai_model
-          model               = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
-          model               = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4o" } if model.nil?
+          model               = OPEN_AI_MODELS.find {|m| m[:name] == model_name || m[:nickname] == model_name }
+          model               = OPEN_AI_MODELS.find {|m| m[:default] == true } if model.nil?
+
+          puts("To translate, we will use the model: #{model[:nickname]}")
+
+          ##============================================================##
+          ## We get the language name and the country name for each locale
+          ##============================================================##
           from_language_name  = ISO_639.find_by_code(from).english_name.split(";").first
           to_iso              = to
             .reject {|code| ImmosquareConstants::Locale.native_name_for_locale(code).nil? }
@@ -35,13 +41,17 @@ module ImmosquareTranslate
             [iso, language_english_name, country_english_name]
           end
 
-          puts(to_iso.inspect)
-
+          ##============================================================##
+          ## Request headers
+          ##============================================================##
           headers       = {
             "Content-Type"  => "application/json",
             "Authorization" => "Bearer #{ImmosquareTranslate.configuration.openai_api_key}"
           }
 
+          ##============================================================##
+          ## System prompt
+          ##============================================================##
           prompt_system = "As a sophisticated translation AI, your role is to translate sentences from a specified source language to multiple target languages.\n" \
                           "We pass you target languages as an array of arrays with this format: [iso_code to use (2 or 4 letters), language target name, country name (country vocabulary to use, this parameter is optional, can be null)].\n" \
                           "Rules to respect:\n" \
@@ -59,7 +69,9 @@ module ImmosquareTranslate
                           "- For multiple input strings, return an array of objects, where each object corresponds to an input string and contains all its translations.\n" \
                           "- Example output for two input strings 'Hello' and 'Goodbye' with target languages ['en', 'es', 'fr']: [{\"en\":\"Hello\",\"es\":\"Hola\",\"fr\":\"Bonjour\"},{\"en\":\"Goodbye\",\"es\":\"Adiós\",\"fr\":\"Au revoir\"}].\n"
 
-
+          ##============================================================##
+          ## User prompt
+          ##============================================================##
           prompt = "Translate the #{texts.size} following #{texts.size == 1 ? "text" : "texts"} from the source language: #{from_language_name} to the target languages specified: #{to_iso}."
 
           ##============================================================##
@@ -71,8 +83,9 @@ module ImmosquareTranslate
             prompt += "\n#{index + 1}: #{sentence.gsub("\n", "___").gsub("\t", "____")}"
           end
 
-
-
+          ##============================================================##
+          ## Request body
+          ##============================================================##
           body = {
             :model       => model[:name],
             :messages    => [
@@ -88,7 +101,7 @@ module ImmosquareTranslate
           call = HTTParty.post(url, :body => body.to_json, :headers => headers, :timeout => 500)
 
 
-          puts("responded in #{(Time.now - t0).round(2)} seconds")
+          puts("OpenAI api response in #{(Time.now - t0).round(2)} seconds")
           raise(call["error"]["message"]) if call.code != 200
 
           ##============================================================##
@@ -98,6 +111,7 @@ module ImmosquareTranslate
           choice    = response["choices"][0]
           raise("Result is not complete") if choice["finish_reason"] != "stop"
 
+
           ##============================================================##
           ## We calculate the estimate price of the call
           ##============================================================##
@@ -106,13 +120,11 @@ module ImmosquareTranslate
           price         = input_price + output_price
           puts("Estimate price => #{input_price.round(3)} + #{output_price.round(3)} = #{price.round(3)} USD")
 
-
           ##============================================================##
           ## On s'assure de ne renvoyer que les locales demandées
           ## car l'API peut renvoyer des locales non demandées...
           ##============================================================##
-          content = JSON.parse(choice["message"]["content"])
-          datas   = content["datas"]
+          datas = JSON.parse(choice["message"]["content"])
           datas.map do |hash|
             hash
               .select {|key, _| to.map(&:downcase).include?(key.downcase) }

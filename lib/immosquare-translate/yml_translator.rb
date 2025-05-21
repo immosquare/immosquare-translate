@@ -174,8 +174,8 @@ module ImmosquareTranslate
         ## https://openai.com/pricing
         ##============================================================##
         model_name = ImmosquareTranslate.configuration.openai_model
-        model      = OPEN_AI_MODELS.find {|m| m[:name] == model_name }
-        model      = OPEN_AI_MODELS.find {|m| m[:name] == "gpt-4o" } if model.nil?
+        model      = OPEN_AI_MODELS.find {|m| m[:name] == model_name || m[:nickname] == model_name }
+        model      = OPEN_AI_MODELS.find {|m| m[:default] == true } if model.nil?
 
         ##============================================================##
         ## Manage blank values

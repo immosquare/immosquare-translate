@@ -5,15 +5,12 @@ require_relative "immosquare-translate/translator"
 require_relative "immosquare-translate/railtie" if defined?(Rails)
 
 
-##===========================================================================##
-##
-##===========================================================================##
 module ImmosquareTranslate
   class << self
 
-    ##===========================================================================##
+    ##============================================================##
     ## Gem configuration
-    ##===========================================================================##
+    ##============================================================##
     attr_writer :configuration
 
     def configuration
@@ -23,7 +20,6 @@ module ImmosquareTranslate
     def config
       yield(configuration)
     end
-
 
 
   end
