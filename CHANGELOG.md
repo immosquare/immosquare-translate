@@ -1,3 +1,6 @@
+## [0.1.15] - 2025-05-21
+- improve translations methods
+
 ## [0.1.14] - 2025-05-21
 - Add 2025 OpenAI models
 - clean files
