@@ -21,7 +21,12 @@ namespace :immosquare_translate do
         puts("#{source_locale} => #{locale}")
       end
 
-      Dir.glob("#{Rails.root}/config/locales/**/*#{source_locale}.yml").each do |file|
+      translation_path = "#{Rails.root}/config/locales/"
+
+      Dir.glob("#{translation_path}**/*#{source_locale}.yml").each do |file|
+        file_name = file.gsub(translation_path, "")
+        puts(("=" * 30).to_s.colorize(:blue))
+        puts("Translating file : #{file_name}".colorize(:blue))
         locales.each do |locale|
           ImmosquareTranslate::YmlTranslator.translate(file, locale, :reset_translations => reset_translations)
         end
