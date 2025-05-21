@@ -13,7 +13,12 @@ namespace :immosquare_translate do
       raise("Please provide a valid locale")                         if !I18n.available_locales.map(&:to_s).include?(source_locale)
       raise("Please provide a valid boolean for reset_translations") if ![true, false].include?(reset_translations)
 
-      locales = I18n.available_locales.map(&:to_s).reject {|l| l == source_locale }
+      ##============================================================##
+      ## Some applications use regional settings (en-US, fr-FR, etc.).
+      ## Normally, these files are just a difference between
+      ## the source regional settings and do not need to be translated.
+      ##============================================================##
+      locales = I18n.available_locales.map(&:to_s).reject {|l| l == source_locale || l.size != 2 }
       return puts("Any translation asked") if locales.empty?
 
       puts("Translations asked :")
