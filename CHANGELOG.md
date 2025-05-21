@@ -1,3 +1,8 @@
+## [0.1.14] - 2025-05-21
+- Add 2025 OpenAI models
+- clean files
+- update some syntaxs
+
 ## [0.1.13] - 2024-11-11
 - Improve translations with countries specifications
 
