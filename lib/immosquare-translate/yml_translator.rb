@@ -12,7 +12,6 @@ module ImmosquareTranslate
         begin
           ##============================================================##
           ## options
-          ## ---------
           ##============================================================##
           options = {
             :reset_translations => false
@@ -22,7 +21,6 @@ module ImmosquareTranslate
 
           ##============================================================##
           ## Load config keys from config_dev.yml
-          ## ---------
           ##============================================================##
           raise("Error: openai_api_key not found in config_dev.yml") if ImmosquareTranslate.configuration.openai_api_key.nil?
           raise("Error: File #{file_path} not found")                if !File.exist?(file_path)

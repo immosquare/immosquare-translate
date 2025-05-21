@@ -8,7 +8,6 @@ namespace :immosquare_translate do
   namespace :sample do
     ##============================================================##
     ## Load config keys from config_dev.yml
-    ## ---------
     ##============================================================##
     def load_config
       path = "#{File.dirname(__FILE__)}/config_dev.yml"
@@ -16,7 +15,6 @@ namespace :immosquare_translate do
 
       ##============================================================##
       ## Load config keys from config_dev.yml
-      ## ---------
       ##============================================================##
       dev_config = YAML.load_file(path)
       abort("Error config_dev.yml is empty") if dev_config.nil?
