@@ -1,3 +1,6 @@
+## [0.1.17] - 2025-05-21
+- update task for manage regional files
+
 ## [0.1.16] - 2025-05-21
 - improve rails tasks
 
