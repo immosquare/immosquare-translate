@@ -1,3 +1,6 @@
+## [0.1.18] - 2025-05-23
+- improve prompt to return JSON array format
+
 ## [0.1.17] - 2025-05-21
 - update task for manage regional files
 
