@@ -57,8 +57,10 @@ module ImmosquareTranslate
                           "Rules to respect:\n" \
                           "- Use the inputted ISO codes for specifying languages.\n" \
                           "- Respond with an array of flat objects in JSON (minified, without any extraneous characters or formatting).\n" \
-                          "- Format the translation output as a JSON string adhering to the following structure: {\"datas\":[{\"locale_iso\": \"Translated Text\"}]} where locale_iso is the language code specifying the language and regional variant.\n" \
-                          "- Ensure that the output does not include markdown (```json) or any other formatting characters. Adhere to the JSON structure meticulously.\n" \
+                          "- Format the translation output as a direct array of objects, where each object contains translations for one input string.\n" \
+                          "- Each object in the array should have language codes as keys and translated text as values.\n" \
+                          "- Ensure that the output does not include markdown (```json) or any other formatting characters.\n" \
+                          "- Adhere to the JSON structure meticulously.\n" \
                           "- Correct any spelling or grammatical errors in the source text before translating.\n" \
                           "- If the source language is also a target language, include the corrected version of the sentence for that language.\n" \
                           "- If string to translate is html, you should return the translated html.\n" \
@@ -124,6 +126,7 @@ module ImmosquareTranslate
           ## On s'assure de ne renvoyer que les locales demandées
           ## car l'API peut renvoyer des locales non demandées...
           ##============================================================##
+
           datas = JSON.parse(choice["message"]["content"])
           datas.map do |hash|
             hash

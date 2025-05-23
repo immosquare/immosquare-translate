@@ -1,4 +1,4 @@
-require "immosquare-translate"
+require_relative "lib/immosquare-translate"
 require "yaml"
 
 
